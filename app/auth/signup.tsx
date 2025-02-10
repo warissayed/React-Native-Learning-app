@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, Alert, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { Link } from 'expo-router'
 import Colors from '../../constant/Colors'
@@ -15,11 +15,13 @@ const SignUp = () => {
   const handleSignin = () => {
     if (!email || !password || !confirmPassword || !name) {
       Alert.alert('Error', 'Please fill in all fields')
+      ToastAndroid.show('Please fill in all fields', ToastAndroid.SHORT)
       return
     }
     
     if(password !== confirmPassword){
       Alert.alert('Error', 'Passwords do not match')
+      ToastAndroid.show('Passwords do not match', ToastAndroid.SHORT)
       return
     }
     
@@ -28,6 +30,8 @@ const SignUp = () => {
         const user = userCredential.user;
         console.log(user)
       Alert.alert('Success', 'Account created successfully!')
+      ToastAndroid.show('Account created successfully!', ToastAndroid.SHORT)
+      
     })
     .catch((error) => {
       let errorMessage = 'An error occurred during sign up'

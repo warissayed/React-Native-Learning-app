@@ -1,15 +1,36 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Alert, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 import Colors from '../../constant/Colors'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/Configs/firebaseConfig'
 
 const login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = () => {
-    // TODO: Implement login logic
-    console.log('Login attempt with:', { email, password })
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields')
+      ToastAndroid.show('Please fill in all fields', ToastAndroid.SHORT)
+      return
+    }
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user)
+      router.replace("/(tabs)")
+    })
+    .catch((error) => {
+     let errorMessage = 'An error occurred during login'
+      if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address'
+      } else if (error.code === 'auth/invalid-password') {
+        errorMessage = 'Please enter a valid password'
+      }
+      Alert.alert('Error', errorMessage)
+      ToastAndroid.show(errorMessage, ToastAndroid.SHORT)
+    })
   }
 
   return (
@@ -48,7 +69,7 @@ const login = () => {
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account? </Text>
-            <Link href="/auth/signin" asChild>
+            <Link href="/auth/signup" asChild>
               <TouchableOpacity>
                 <Text style={styles.linkText}>Sign up</Text>
               </TouchableOpacity>
