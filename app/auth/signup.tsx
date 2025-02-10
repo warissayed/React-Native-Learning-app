@@ -1,17 +1,45 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { Link } from 'expo-router'
 import Colors from '../../constant/Colors'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {auth} from "../../Configs/firebaseConfig"
 
-const signin = () => {
+const SignUp = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-
+  
+  
   const handleSignin = () => {
-    // TODO: Implement registration logic
-    console.log('Sign up attempt with:', { name, email, password, confirmPassword })
+    if (!email || !password || !confirmPassword || !name) {
+      Alert.alert('Error', 'Please fill in all fields')
+      return
+    }
+    
+    if(password !== confirmPassword){
+      Alert.alert('Error', 'Passwords do not match')
+      return
+    }
+    
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user)
+      Alert.alert('Success', 'Account created successfully!')
+    })
+    .catch((error) => {
+      let errorMessage = 'An error occurred during sign up'
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email is already registered'
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address'
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password should be at least 6 characters'
+      }
+      Alert.alert('Error', errorMessage)
+    })
   }
 
   return (
@@ -84,7 +112,7 @@ const signin = () => {
   )
 }
 
-export default signin
+export default SignUp
 
 const styles = StyleSheet.create({
   container: {
