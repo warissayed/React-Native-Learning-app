@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, Scro
 import React, { useState } from 'react'
 import { Link } from 'expo-router'
 import Colors from '../../constant/Colors'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import {auth} from "../../Configs/firebaseConfig"
 
 const SignUp = () => {
@@ -10,6 +10,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
   
   
   const handleSignin = () => {
@@ -26,8 +27,11 @@ const SignUp = () => {
     }
     
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async(userCredential) => {
         const user = userCredential.user;
+        await updateProfile(user, {
+          displayName: name
+        })
         console.log(user)
       Alert.alert('Success', 'Account created successfully!')
       ToastAndroid.show('Account created successfully!', ToastAndroid.SHORT)
@@ -104,9 +108,9 @@ const SignUp = () => {
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>
-            <Link href="/auth/login" asChild>
+            <Link href="/auth/signin" asChild>
               <TouchableOpacity>
-                <Text style={styles.linkText}>Login</Text>
+                <Text style={styles.linkText}>signin</Text>
               </TouchableOpacity>
             </Link>
           </View>

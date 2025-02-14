@@ -12,7 +12,7 @@ const loginScreen = () => {
      <View style={styles?.textContainer}>
       <Text style={styles?.title}>Stay on Track,Stay Healthy , Start Today.</Text>
       <Text style={styles?.summary}>Track your Habit with us </Text>
-      <TouchableOpacity style={styles?.buttonContainer} onPress={()=>router.push("/auth/login")} ><Text style={styles?.button}>Login</Text></TouchableOpacity>
+      <TouchableOpacity style={styles?.buttonContainer} onPress={()=>router.push("/auth/signin")} ><Text style={styles?.button}>Sign In</Text></TouchableOpacity>
       <TouchableOpacity style={styles?.buttonContainer} onPress={()=>router.push("/auth/signup")} ><Text style={styles?.button}>Sign Up</Text></TouchableOpacity>
      </View>
     </View>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
    
   },
   button:{
-    fontSize:16,
+    fontSize:18,
     backgroundColor:"white",
     marginTop:20,
     padding:10,
