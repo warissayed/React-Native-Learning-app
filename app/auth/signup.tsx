@@ -1,61 +1,71 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView, ScrollView, Alert, ToastAndroid } from 'react-native'
-import React, { useState } from 'react'
-import { Link } from 'expo-router'
-import Colors from '../../constant/Colors'
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import {auth} from "../../Configs/firebaseConfig"
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  Alert,
+  ToastAndroid,
+} from "react-native";
+import React, { useState } from "react";
+import { Link, router } from "expo-router";
+import Colors from "../../constant/Colors";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../Configs/firebaseConfig";
+import { setLocalStorage } from "@/Service/Storage";
 
 const SignUp = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  
-  
   const handleSignin = () => {
     if (!email || !password || !confirmPassword || !name) {
-      Alert.alert('Error', 'Please fill in all fields')
-      ToastAndroid.show('Please fill in all fields', ToastAndroid.SHORT)
-      return
+      Alert.alert("Error", "Please fill in all fields");
+      ToastAndroid.show("Please fill in all fields", ToastAndroid.SHORT);
+      return;
     }
-    
-    if(password !== confirmPassword){
-      Alert.alert('Error', 'Passwords do not match')
-      ToastAndroid.show('Passwords do not match', ToastAndroid.SHORT)
-      return
+
+    if (password !== confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      ToastAndroid.show("Passwords do not match", ToastAndroid.SHORT);
+      return;
     }
-    
+
     createUserWithEmailAndPassword(auth, email, password)
-    .then(async(userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
         await updateProfile(user, {
-          displayName: name
-        })
-        console.log(user)
-      Alert.alert('Success', 'Account created successfully!')
-      ToastAndroid.show('Account created successfully!', ToastAndroid.SHORT)
-      
-    })
-    .catch((error) => {
-      let errorMessage = 'An error occurred during sign up'
-      if (error.code === 'auth/email-already-in-use') {
-        errorMessage = 'This email is already registered'
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Please enter a valid email address'
-      } else if (error.code === 'auth/weak-password') {
-        errorMessage = 'Password should be at least 6 characters'
-      }
-      Alert.alert('Error', errorMessage)
-    })
-  }
+          displayName: name,
+        });
+        console.log(user);
+        setLocalStorage("user", JSON.stringify(user));
+        Alert.alert("Success", "Account created successfully!");
+        ToastAndroid.show("Account created successfully!", ToastAndroid.SHORT);
+        router.replace("/(tabs)");
+      })
+      .catch((error) => {
+        let errorMessage = "An error occurred during sign up";
+        if (error.code === "auth/email-already-in-use") {
+          errorMessage = "This email is already registered";
+        } else if (error.code === "auth/invalid-email") {
+          errorMessage = "Please enter a valid email address";
+        } else if (error.code === "auth/weak-password") {
+          errorMessage = "Password should be at least 6 characters";
+        }
+        Alert.alert("Error", errorMessage);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>Join us today!</Text>
-        
+
         <View style={styles.form}>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Full Name</Text>
@@ -117,10 +127,10 @@ const SignUp = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default SignUp
+export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
@@ -130,27 +140,27 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     padding: 20,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#fff',
-    textAlign: 'center',
+    color: "#fff",
+    textAlign: "center",
     marginBottom: 40,
     opacity: 0.8,
   },
   form: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -165,42 +175,42 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginBottom: 8,
-    color: '#333',
-    fontWeight: '500',
+    color: "#333",
+    fontWeight: "500",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 10,
     padding: 12,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
   },
   button: {
     backgroundColor: Colors.PRIMARY,
     padding: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   footerText: {
-    color: '#666',
+    color: "#666",
     fontSize: 16,
   },
   linkText: {
     color: Colors.PRIMARY,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-})
+});
