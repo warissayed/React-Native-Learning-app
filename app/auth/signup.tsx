@@ -45,7 +45,7 @@ const SignUp = () => {
         setLocalStorage("user", JSON.stringify(user));
         Alert.alert("Success", "Account created successfully!");
         ToastAndroid.show("Account created successfully!", ToastAndroid.SHORT);
-        router.replace("/(tabs)");
+        router.replace("/(tabs)/Profile");
       })
       .catch((error) => {
         let errorMessage = "An error occurred during sign up";

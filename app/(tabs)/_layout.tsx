@@ -13,8 +13,8 @@ export default function TabLayout() {
     getUserDetails();
   }, []);
 
-  const getUserDetails = () => {
-    const user = getLocalStorage("user");
+  const getUserDetails = async () => {
+    const user = await getLocalStorage("user");
     if (!user) {
       router.replace("/auth/signin");
     }
